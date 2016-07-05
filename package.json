@@ -1,0 +1,7 @@
+{
+  "name": "docker-postgres-db",
+  "scripts": {
+    "build": "docker build -t \"db\" .",
+    "start": "mkdir ~/conf/customer/db/lib && mkdir ~/conf/customer/db/run && docker run -d --name dotnet-db -v ~/conf/customer/db/lib:/var/lib/postgresql -v ~/conf/customer/db/run:/var/run/postgresql db"
+  }
+}
