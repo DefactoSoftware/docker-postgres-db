@@ -1,11 +1,14 @@
 FROM ubuntu
- 
+
 ENV PG_VERSION 9.3
 ENV USER docker
 ENV PASS docker
 ENV PGDATA /var/lib/postgresql/$PG_VERSION/main
 ENV PGRUN /var/run/postgresql
- 
+
+RUN apt-get update
+RUN apt-get install -y curl
+
 RUN \
   echo "deb http://apt.postgresql.org/pub/repos/apt/ trusty-pgdg main" \
        > /etc/apt/sources.list.d/pgdg.list && \
@@ -16,13 +19,15 @@ RUN \
           postgresql-${PG_VERSION} \
           postgresql-contrib-${PG_VERSION} && \
   rm -rf /var/lib/apt/lists/*
- 
+
 RUN \
   echo "host all all 0.0.0.0/0 md5" >> /etc/postgresql/${PG_VERSION}/main/pg_hba.conf && \
   echo "listen_addresses='*'" >> /etc/postgresql/${PG_VERSION}/main/postgresql.conf
- 
-COPY start.sh start.sh
- 
+
+RUN mkdir -p /usr/src/db
+ADD . /usr/src/db
+WORKDIR /usr/src/db
+
 EXPOSE 5432
 RUN rm /usr/sbin/policy-rc.d
-CMD ["/start.sh"]
+CMD ["./start.sh"]
